@@ -7,8 +7,7 @@ fn read_lines() -> io::Result<Vec<String>> {
     reader.lines().collect()
 }
 
-fn part1() -> i32 {
-    let lines = read_lines().unwrap();
+fn parse_lines_to_vecs(lines: Vec<String>) -> (Vec<i32>, Vec<i32>) {
     let mut left_numbers: Vec<i32> = Vec::new();
     let mut right_numbers: Vec<i32> = Vec::new();
     for line in &lines {
@@ -18,6 +17,20 @@ fn part1() -> i32 {
         left_numbers.push(left);
         right_numbers.push(right);
     }
+    (left_numbers, right_numbers)
+}
+
+fn prep_input() -> (Vec<i32>, Vec<i32>) {
+    let lines = read_lines().unwrap();
+    parse_lines_to_vecs(lines)
+}
+
+fn count_occurences(vector: &[i32], value: &i32) -> i32 {
+    vector.iter().filter(|&v| v == value).count() as i32
+}
+
+fn part1() -> i32 {
+    let (mut left_numbers, mut right_numbers) = prep_input();
     left_numbers.sort();
     right_numbers.sort();
     left_numbers
@@ -28,6 +41,16 @@ fn part1() -> i32 {
         .unwrap()
 }
 
+fn part2() -> i32 {
+    let (left_numbers, right_numbers) = prep_input();
+    left_numbers
+        .iter()
+        .map(|value| value * count_occurences(&right_numbers, value))
+        .reduce(|acc, x| acc + x)
+        .unwrap()
+}
+
 pub fn solve() {
     println!("Part 1 - {}", part1());
+    println!("Part 2 - {}", part2());
 }
